@@ -1,5 +1,3 @@
-import pkg_resources
-
 from monosi.drivers import DriverConfig
 import monosi.drivers.snowflake
 

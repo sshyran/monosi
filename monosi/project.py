@@ -2,7 +2,7 @@ from dataclasses import dataclass, field
 from typing import List
 
 from monosi.config.configuration import Configuration
-from monosi.monitors.base import Monitor
+from monosi.monitors.types.base import Monitor
 from monosi.parsers.monitors import MonitorParser
 from monosi.utils.files import FileType, read_project_files
 

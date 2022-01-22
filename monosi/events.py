@@ -34,15 +34,16 @@ def context():
     ]
 
 def track_event(config, *args, **kwargs):
-    if config.send_anonymous_stats:
-        try:
-            tracker.track_struct_event(
-                action=kwargs['action'],
-                label=kwargs['label'],
-                category='monosi',
-                context=context(),
-            )
-        except Exception as e:
-            logging.error("Failed to send anonymous usage stats.")
-            logging.error(e)
+    # if config.send_anonymous_stats:
+    #TODO: Resolve with driver
+    try:
+        tracker.track_struct_event(
+            action=kwargs['action'],
+            label=kwargs['label'],
+            category='monosi',
+            context=context(),
+        )
+    except Exception as e:
+        logging.error("Failed to send anonymous usage stats.")
+        logging.error(e)
 

@@ -1,24 +1,10 @@
 from dataclasses import dataclass, field
 from math import sqrt
 from typing import List
-from monosi.analyzer.data import DataPoint
 
-from monosi.monitors.table import ColumnMetric
+from monosi.monitors.types.metrics import MetricBase
 
-from .data import Data, Test, TestResult, TableDataPoint
-
-@dataclass
-class ZScoreDataPointFields:
-    expected_range_start: float
-    expected_range_end: float
-    z_score: float
-
-@dataclass
-class ZScoreDataPoint(TableDataPoint, ZScoreDataPointFields):
-    pass
-
-class ZScoreTestResult(TestResult):
-    data: List[ZScoreDataPoint]
+from .data import Data, DataPoint, Test, TestResult
 
 class ZScoreAlgorithm:
     @classmethod
@@ -67,21 +53,32 @@ class ZScoreAlgorithm:
 
         return zscore_points
 
+class TableDataPoint(DataPoint):
+    window_start: str
+    window_end: str
+
+@dataclass
+class ZScoreDataPointFields:
+    expected_range_start: float
+    expected_range_end: float
+    z_score: float
+
+@dataclass
+class ZScoreDataPoint(TableDataPoint, ZScoreDataPointFields):
+    pass
+
 @dataclass
 class ZScoreTest(Test):
     sensitivity: float = 3.0
     data: List[DataPoint]
-    anomalies: List[DataPoint] = field(default_factory=list)
-
-    @classmethod
-    def from_metric(cls, metric: ColumnMetric, data: Data):
-        metric_data = data.for_metric(metric)
-        return cls(data=metric_data, column=metric.column, metric=metric.type.value)
 
     def run(self):
-        z_scores = ZScoreAlgorithm.run(self.data, self.sensitivity)
-        result = ZScoreTestResult(z_scores)
-        self.anomalies = result.anomalies()
+        self.data = ZScoreAlgorithm.run(self.data, self.sensitivity)
 
-        return result
+        return TestResult(self.anomalies())
+
+    @classmethod
+    def from_metric(cls, metric: MetricBase, data: Data):
+        points = data.for_metric(metric)
+        return cls(data=points)
 

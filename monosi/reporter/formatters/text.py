@@ -13,9 +13,7 @@ class TextFormatter(BaseFormatter):
             self.write("\nFailures\n", Color.RED)
 
         for failed_test in failed_tests:
-            self.write("\tColumn: {}\n".format(failed_test.column), Color.RED)
-            self.write("\tMetric: {}\n".format(failed_test.metric), Color.RED)
-            self.write("\tAnomalies: {}\n".format(len(failed_test.anomalies)), Color.RED)
+            self.write("\tAnomalies: {}\n".format(len(failed_test.anomalies())), Color.RED)
             self.write("\n", Color.RED)
             # for anomaly in failed_test.anomalies:
             #     self.write("\tValue: {value}\n\tExpected Range: {start} - {stop}\n\tTime Window: {time_start} - {time_end}\n\n".format(

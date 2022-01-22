@@ -9,6 +9,7 @@ from .metrics import MetricBase
 class MonitorType(Enum):
     TABLE = 'table'
     CUSTOM = 'custom'
+    SCHEMA = 'schema'
 
 class ScheduleType(Enum):
     INTERVAL = 'interval'

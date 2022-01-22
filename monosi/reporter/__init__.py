@@ -1,4 +1,3 @@
-from datetime import datetime
 from time import time
 
 from monosi.reporter.formatters.progress import ProgressFormatter

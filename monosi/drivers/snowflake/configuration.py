@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from typing import List, Type
+from typing import List
 import snowflake.connector
 from monosi.config.configuration import Configuration
 from monosi.events import track_event
@@ -91,14 +91,7 @@ class SnowflakeDriver(BaseDriver):
     def __init__(self, config: SnowflakeConfiguration):
         self.config = config.config
         self.dialect = SnowflakeDialect
-        try:
-            connection_details = self.config.to_dict()
-            self._instance = snowflake.connector.connect(
-                **connection_details
-            )
-            track_event(config, action="database_connection_success", label="snowflake")
-        except Exception as e:
-            track_event(config, action="database_connection_fail", label="snowflake")
+        self._instance = None
 
     def _before_execute(self, cs):
         if self.config.warehouse is not None: 
@@ -137,6 +130,16 @@ class SnowflakeDriver(BaseDriver):
         return columns
 
     def execute_sql(self, sql, **params):
+        if not self._instance: #TODO : Reconnect if disconnected
+            try:
+                connection_details = self.config.to_dict()
+                self._instance = snowflake.connector.connect(
+                    **connection_details
+                )
+                track_event(self.config, action="database_connection_success", label="snowflake")
+            except Exception as e:
+                track_event(self.config, action="database_connection_fail", label="snowflake")
+
         cs = self._instance.cursor()
         results = []
         try:

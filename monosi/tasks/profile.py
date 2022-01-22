@@ -1,4 +1,4 @@
-from monosi.profiler import Profiler
+from monosi.monitors.profiler import Profiler
 from monosi.tasks.base import TaskBase
 
 class ProfileTask(TaskBase):

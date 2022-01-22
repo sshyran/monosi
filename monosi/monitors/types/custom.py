@@ -3,10 +3,11 @@ from enum import Enum
 from typing import Any, List, Dict
 
 import operator as py_operator
-from monosi.monitors.base import Schedule
+from monosi.drivers.dialect import Dialect
+from monosi.monitors.types.base import Schedule
 # from monosi.monitors.base import Schedule
 
-from monosi.monitors.metrics import MetricType
+from monosi.monitors.types.metrics import MetricType
 
 from .base import Monitor
 from .metrics import MetricBase
@@ -80,6 +81,9 @@ class CustomMetric(MetricBase):
             sql=sql, 
             thresholds=thresholds,
         )
+
+    def compile(self, dialect: Dialect):
+        return self.sql
 
 def extract_or_default(obj, key, default):
     return obj[key] if key in obj else default

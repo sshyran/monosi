@@ -4,6 +4,7 @@ from typing import Any, Dict, List
 from monosi.drivers.column import ColumnDataType
 
 from monosi.drivers.column import Column
+from monosi.drivers.dialect import Dialect
 
 from .base import Monitor
 from .metrics import MetricBase
@@ -94,6 +95,20 @@ class ColumnMetric(MetricBase):
 
     def alias(self):
         return "{}__{}".format(self.column, self.type.value)
+
+    def compile(self, dialect: Dialect):
+        alias = self.alias()
+        column = self.column
+
+        attr = getattr(dialect, self.type._value_)
+        if not attr:
+            raise Exception("Unreachable: Metric type is defined that does not resolve to a definition.")
+        unformatted_metric_sql = attr()
+        formatted_metric_sql = unformatted_metric_sql.format(column)
+
+        metric_sql = "{} AS {}".format(formatted_metric_sql, alias)
+        return metric_sql
+
 
 @dataclass 
 class TableMonitor(Monitor):

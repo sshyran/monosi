@@ -1,7 +1,7 @@
 from typing import Iterable
 
-from monosi.monitors import load_monitor_cls
-from monosi.monitors.base import Monitor
+from monosi.monitors.types import load_monitor_cls
+from monosi.monitors.types.base import Monitor
 from monosi.parsers import YamlParser
 from monosi.utils.files import File
 
@@ -23,7 +23,7 @@ class MonitorParser(YamlParser):
         return ".".join(table_parts)
 
     def _resolve_table(self, monitor_dict):
-        if 'type' not in monitor_dict or monitor_dict['type'] != 'table':
+        if 'type' not in monitor_dict or monitor_dict['type'] == 'custom':
             return
 
         fqn = self._fqtablename(monitor_dict['table'])
